@@ -47,4 +47,8 @@
         Android Developer Extraordinaire
     </string>
 
+    <string name="roll">
+        Roll
+    </string>
+
 </resources>

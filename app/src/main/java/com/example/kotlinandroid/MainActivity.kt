@@ -7,10 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,11 +20,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.kotlinandroid.ui.theme.KotlinAndroidTheme
-import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Email
 import androidx.compose.material.icons.rounded.Phone
 import androidx.compose.material.icons.rounded.Share
+import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalConfiguration
 
 //import androidx.compose.material.icons.rounded.Email
@@ -58,7 +55,8 @@ fun BirthdayCardPreview() {
     //Article()
     //ToDoList()
     //QuadrantCompose()
-    carteVisite()
+    //carteVisite()
+    DiceWithButtonAndImage()
 }
 
 @Composable
@@ -240,7 +238,10 @@ fun carteVisite(modifier: Modifier=Modifier){
         Row(modifier = Modifier
             .height((screenHeight * 0.3).dp) ) {
             Column(modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                Row(modifier.padding(0.dp, 0.dp, 0.dp, 20.dp).fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+                Row(
+                    modifier
+                        .padding(0.dp, 0.dp, 0.dp, 20.dp)
+                        .fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
                     Icon(Icons.Rounded.Phone, contentDescription = "Localized description",
                     modifier=modifier.padding(0.dp, 0.dp, 20.dp, 0.dp))
                     Text(text = "+11 (123) 444 555 666")
@@ -261,8 +262,28 @@ fun carteVisite(modifier: Modifier=Modifier){
 }
 
 
-
-
+@Composable
+fun DiceWithButtonAndImage(modifier : Modifier = Modifier){
+    var result by remember { mutableStateOf(1) }
+    val imageResource = when (result){
+        1 -> R.drawable.dice_1
+        2 -> R.drawable.dice_2
+        3 -> R.drawable.dice_3
+        4 -> R.drawable.dice_4
+        5 -> R.drawable.dice_5
+        else -> R.drawable.dice_6
+    }
+    Column(modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+        Image(
+            painter = painterResource(imageResource),
+            contentDescription = result.toString()
+        )
+        Spacer(modifier.height(16.dp))
+        Button( onClick = { result = (1..6).random()}) {
+            Text(text = stringResource(R.string.roll))
+        }
+    }
+}
 
 
 
