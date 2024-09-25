@@ -51,4 +51,15 @@
         Roll
     </string>
 
+        <string name="app_names">Tip Time</string>
+        <string name="calculate_tip">Calculate Tip</string>
+        <string name="bill_amount">Bill Amount</string>
+        <string name="tip_amount">Tip Amount: %s</string>
+
+    <string name="artwork_title">still Life of Blue Rose and Other Flowers</string>
+    <string name="artwork_artist_name">Owen Scott</string>
+    <string name="artwork_artist_year">(2021)</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
+
 </resources>

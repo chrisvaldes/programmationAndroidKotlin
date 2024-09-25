@@ -4,9 +4,14 @@ import android.media.Image
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,6 +31,13 @@ import androidx.compose.material.icons.rounded.Phone
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalConfiguration
+import java.text.NumberFormat
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.input.KeyboardType
 
 //import androidx.compose.material.icons.rounded.Email
 
@@ -56,7 +68,9 @@ fun BirthdayCardPreview() {
     //ToDoList()
     //QuadrantCompose()
     //carteVisite()
-    DiceWithButtonAndImage()
+    //DiceWithButtonAndImage()
+    //TipTimeLayout()
+    ArtSpace()
 }
 
 @Composable
@@ -285,7 +299,156 @@ fun DiceWithButtonAndImage(modifier : Modifier = Modifier){
     }
 }
 
+private fun calculateTip(amount : Double, tipPercent : Double = 15.0) : String{
+    val tip = tipPercent / 100*amount
+    return  NumberFormat.getCurrencyInstance().format(tip)
+}
 
+@VisibleForTesting
+internal fun calculateTip(amount : Double, tipPercent : Double = 15.0, roundUp : Boolean) : String{
+    var tip = tipPercent / 100*amount
+    if(roundUp){
+        tip = kotlin.math.ceil(tip)
+    }
+    return  NumberFormat.getCurrencyInstance().format(tip)
+}
+
+
+@Composable
+fun EditNumberField(value: String,
+                    onValueChange: (String) -> Unit,modifier: Modifier = Modifier) {
+    /* var amountInput by remember {
+        mutableStateOf("0")
+    }
+
+    val amount = amountInput.toDoubleOrNull()?:0.0
+    val tip = calculateTip(amount)*/
+
+    TextField(
+        //value = amountInput,
+        value= value,
+        //onValueChange = { amountInput = it },
+        onValueChange = onValueChange,
+        singleLine = true,
+        label = { Text(stringResource(R.string.bill_amount)) },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        modifier = modifier
+    )
+}
+
+@Composable
+fun TipTimeLayout(modifier: Modifier=Modifier.fillMaxSize()){
+    var amountInput by remember {
+        mutableStateOf("0")
+    }
+
+    val amount = amountInput.toDoubleOrNull()?:0.0
+    val tip = calculateTip(amount)
+
+    Column(modifier = Modifier
+        .statusBarsPadding()
+        .padding(horizontal = 40.dp)
+        .verticalScroll(rememberScrollState())
+        .safeDrawingPadding()
+        .fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally) {
+
+        Text(text = stringResource(R.string.calculate_tip),
+            modifier = Modifier
+                .padding(bottom = 16.dp, top = 40.dp)
+                .align(alignment = Alignment.Start)
+            )
+
+        EditNumberField(
+            value = amountInput,
+            onValueChange = {amountInput = it},
+            modifier = Modifier
+                .padding(bottom = 32.dp)
+                .fillMaxWidth())
+
+        Text(text = stringResource(R.string.tip_amount, tip),
+            style = MaterialTheme.typography.h5
+            )
+        Spacer(modifier = Modifier.height(150.dp))
+    }
+}
+
+@Composable
+fun ArtSpace(modifier: Modifier=Modifier){
+    // get screen dimensions
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp // Largeur en dp
+    val screenHeight = configuration.screenHeightDp
+
+    Column(
+        modifier
+            .fillMaxSize(1f)
+            .padding(horizontal = 16.dp)
+    ) {
+        Row(modifier = Modifier
+            .height((screenHeight * 0.7).dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+
+            ) {
+                Row(modifier = Modifier
+                    .height((screenHeight * 0.6).dp)
+                    .width((screenWidth * 1).dp)
+                    .padding(30.dp)
+                    .background(Color.White)
+                    .clip(RoundedCornerShape(16.dp)) // applique un border radius de 16.dp
+                    .shadow(4.dp, RoundedCornerShape(16.dp)), // applique une ombre avec un rayon de 16.dp
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center) {
+                    Box(modifier = Modifier
+                        .padding(25.dp)
+                        .background(Color.Cyan)
+                    ){
+                        Image(
+                            painter = painterResource(R.drawable.dice_6),
+                            contentDescription = null,
+                        )
+                    }
+                }
+        }
+        Row(
+            modifier
+                .fillMaxWidth()
+                .padding(40.dp)
+                .background(Color.LightGray)) {
+          Column(modifier = Modifier
+              .padding(15.dp)) {
+              Text(text = stringResource(R.string.artwork_title),
+              fontSize = 20.sp,
+              fontWeight = FontWeight.Normal,
+              fontFamily = FontFamily.SansSerif)
+              Row(modifier) {
+                  Text(text = stringResource(R.string.artwork_artist_name),
+                      fontSize = 15.sp,
+                      fontWeight = FontWeight.Bold,
+                      fontFamily = FontFamily.SansSerif
+                  )
+                  Spacer(modifier = Modifier.width(5.dp))
+                  Text(text = stringResource(R.string.artwork_artist_year),
+                  )
+              }
+          }  
+        }
+        Row(modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceAround) {
+           Button(onClick = { /*TODO*/ }, modifier = Modifier.width(150.dp)
+               .clip(RoundedCornerShape(100.dp))) {
+               Text(text = stringResource(R.string.previous))
+           }
+            Button(onClick = { /*TODO*/ }, modifier = Modifier.width(150.dp)
+                .clip(RoundedCornerShape(100.dp))) {
+                Text(text = stringResource(R.string.next))
+            }
+        }
+    }
+}
 
 
 
