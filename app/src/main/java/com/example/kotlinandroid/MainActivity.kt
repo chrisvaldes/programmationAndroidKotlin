@@ -52,7 +52,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    GreetingText("Happy Birthday",  "Valdes!!")
+                    //GreetingText("Happy Birthday",  "Valdes!!")
+                    ArtSpace()
+                    //TipTimeLayout()
                 }
             }
         }
@@ -381,6 +383,29 @@ fun ArtSpace(modifier: Modifier=Modifier){
     val screenWidth = configuration.screenWidthDp // Largeur en dp
     val screenHeight = configuration.screenHeightDp
 
+    var result by remember {
+        mutableStateOf(1)
+    }
+
+    val nextImage: () -> Unit = {
+        result = if (result > 6) 1 else result + 1
+    }
+
+    val previousImage: () -> Unit = {
+        result = if (result < 1) 6 else result - 1
+    }
+
+
+    val imageResource = when (result){
+        1 -> R.drawable.author_1
+        2 -> R.drawable.author_2
+        3 -> R.drawable.author_3
+        4 -> R.drawable.author_4
+        5 -> R.drawable.author_5
+        6 -> R.drawable.author_6
+        else -> R.drawable.darknet
+    }
+
     Column(
         modifier
             .fillMaxSize(1f)
@@ -406,7 +431,7 @@ fun ArtSpace(modifier: Modifier=Modifier){
                         .background(Color.Cyan)
                     ){
                         Image(
-                            painter = painterResource(R.drawable.dice_6),
+                            painter = painterResource(imageResource),
                             contentDescription = null,
                         )
                     }
@@ -438,11 +463,21 @@ fun ArtSpace(modifier: Modifier=Modifier){
         Row(modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround) {
-           Button(onClick = { /*TODO*/ }, modifier = Modifier.width(150.dp)
+           Button(onClick = {  previousImage()},
+               colors = ButtonDefaults.buttonColors(
+                    Color.Cyan
+               ),
+               modifier = Modifier
+               .width(150.dp)
                .clip(RoundedCornerShape(100.dp))) {
-               Text(text = stringResource(R.string.previous))
+               Text(text = stringResource(R.string.previous),
+               )
            }
-            Button(onClick = { /*TODO*/ }, modifier = Modifier.width(150.dp)
+            Button(onClick = { nextImage() },
+                colors = ButtonDefaults.buttonColors(
+                    Color.Green
+                ), modifier = Modifier
+                .width(150.dp)
                 .clip(RoundedCornerShape(100.dp))) {
                 Text(text = stringResource(R.string.next))
             }
